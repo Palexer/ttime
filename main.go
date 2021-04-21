@@ -28,6 +28,7 @@ func main() {
 		pterm.FgYellow.Printf("%s\n", time.Now().Format(time.RFC1123))
 	case "stopwatch":
 		starttime := time.Now()
+		pterm.FgWhite.Println("Press Enter to stop")
 		spinner, err := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Running Stopwatch")
 		if err != nil {
 			printErrExit(err)
@@ -41,12 +42,38 @@ func main() {
 		if len(flag.Args()) < 2 {
 			printErrExit("not enough arguments: no time provided")
 		}
-		// genaues Datum, 24-Stunden bzw. lokales Format
-		alarmtime, err := time.ParseInLocation("2-1-2006:3-4-5", flag.Arg(1), time.Local)
+
+		alarmtime, err := time.Parse("2.1.2006-15:4:5", flag.Arg(1))
 		if err != nil {
 			printErrExit("failed to parse time: ", err)
 		}
-		println(alarmtime.String())
+
+		duration := alarmtime.Sub(time.Now())
+		if err != nil {
+			printErrExit(err)
+		}
+
+		pterm.FgYellow.Println("Setting an alarm to ", alarmtime.Round(time.Second).String())
+
+		timer := time.NewTimer(duration)
+		go func() {
+			// progressbar
+			bar, err := pterm.DefaultProgressbar.WithTotal(int(duration.Seconds())).WithTitle("Alarm: ").Start()
+			if err != nil {
+				printErrExit(err)
+			}
+
+			for i := 0; i < bar.Total; i++ {
+				time.Sleep(time.Second)
+				bar.Increment()
+			}
+			pterm.FgYellow.Println("\nFinished")
+		}()
+		<-timer.C
+
+		if !*nonotify {
+			notify("Alarm finished!", !*nosound)
+		}
 
 	case "timer":
 		if len(flag.Args()) < 2 {

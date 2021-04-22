@@ -56,13 +56,6 @@ The command above will create an alarm on the 2nd of January 2006 at 3:04:05 PM
 - github.com/pterm/pterm for pretty terminal output
 - github.com/gen2brain/beeep for notifications
 
-## ToDo
-
-- test/finish alarm
-- notification testing
-- buildall in Makefile
-- sound with notification
-
 ## LICENSE
 
 BSD 3-Clause License

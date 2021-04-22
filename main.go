@@ -43,17 +43,23 @@ func main() {
 			printErrExit("not enough arguments: no time provided")
 		}
 
-		alarmtime, err := time.Parse("2.1.2006-15:4:5", flag.Arg(1))
+		alarmtime, err := time.ParseInLocation("02.01.2006-15:04:05", flag.Arg(1), time.Local)
 		if err != nil {
 			printErrExit("failed to parse time: ", err)
 		}
 
-		duration := alarmtime.Sub(time.Now())
+		now := time.Now()
+
+		duration := alarmtime.Sub(now)
 		if err != nil {
 			printErrExit(err)
 		}
 
-		pterm.FgYellow.Println("Setting an alarm to ", alarmtime.Round(time.Second).String())
+		if alarmtime.Before(now) {
+			printErrExit("please provide a time in the future")
+		}
+
+		pterm.FgYellow.Printf("Setting an alarm to %s (%s)\n", alarmtime.Round(time.Second).String(), duration.Round(time.Second).String())
 
 		timer := time.NewTimer(duration)
 		go func() {

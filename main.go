@@ -23,20 +23,24 @@ func main() {
 	nonotify := flag.Bool("nonotify", false, "don't send a notification when a timer is finished")
 	flag.Parse()
 
-	switch flag.Arg(0) {
+	bwstyle := pterm.NewStyle(pterm.FgWhite, pterm.BgBlack)
+
+	switch strings.ToLower(flag.Arg(0)) {
 	case "":
-		pterm.FgYellow.Printf("%s\n", time.Now().Format(time.RFC1123))
+		fmt.Printf("%s\n", time.Now().Format(time.RFC1123))
 	case "stopwatch":
 		starttime := time.Now()
 		pterm.FgWhite.Println("Press Enter to stop")
+
 		spinner, err := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Running Stopwatch")
 		if err != nil {
 			printErrExit(err)
 		}
+
 		fmt.Scanln()
 		stoptime := time.Now()
 
-		pterm.FgYellow.Printf("Measured time: %s\n", stoptime.Sub(starttime).Round(time.Millisecond))
+		fmt.Printf("Measured time: %s\n", stoptime.Sub(starttime).Round(time.Millisecond))
 		spinner.Stop()
 	case "alarm":
 		if len(flag.Args()) < 2 {
@@ -59,21 +63,21 @@ func main() {
 			printErrExit("please provide a time in the future")
 		}
 
-		pterm.FgYellow.Printf("Setting an alarm to %s (%s)\n", alarmtime.Round(time.Second).String(), duration.Round(time.Second).String())
+		fmt.Printf("Setting an alarm to %s (%s)\n", alarmtime.Round(time.Second).String(), duration.Round(time.Second).String())
 
 		timer := time.NewTimer(duration)
 		go func() {
 			// progressbar
-			bar, err := pterm.DefaultProgressbar.WithTotal(int(duration.Seconds())).WithTitle("Alarm: ").Start()
+			bar, err := pterm.DefaultProgressbar.WithTotal(int(duration.Seconds())).WithTitle("Alarm: ").WithBarStyle(bwstyle).Start()
 			if err != nil {
 				printErrExit(err)
 			}
 
 			for i := 0; i < bar.Total; i++ {
-				time.Sleep(time.Second)
 				bar.Increment()
+				time.Sleep(time.Second)
 			}
-			pterm.FgYellow.Println("\nFinished")
+			fmt.Println("\nFinished")
 		}()
 		<-timer.C
 
@@ -116,7 +120,7 @@ func main() {
 		}
 
 		timeInSeconds := days*24*60*60 + hours*60*60 + minutes*60 + seconds
-		pterm.FgYellow.Printf("Timer for %d days, %d hours, %d minutes and %d seconds\n\n", days, hours, minutes, seconds)
+		fmt.Printf("Timer for %d days, %d hours, %d minutes and %d seconds\n\n", days, hours, minutes, seconds)
 
 		duration, err := time.ParseDuration(strconv.Itoa(timeInSeconds) + "s")
 		if err != nil {
@@ -126,21 +130,25 @@ func main() {
 		timer := time.NewTimer(duration)
 		go func() {
 			// progressbar
-			bar, err := pterm.DefaultProgressbar.WithTotal(timeInSeconds).WithTitle("Timer: ").Start()
+			bar, err := pterm.DefaultProgressbar.WithTotal(timeInSeconds).WithTitle("Timer: ").WithBarStyle(bwstyle).Start()
 			if err != nil {
 				printErrExit(err)
 			}
 
 			for i := 0; i < bar.Total; i++ {
-				time.Sleep(time.Second)
 				bar.Increment()
+				time.Sleep(time.Second)
 			}
-			pterm.FgYellow.Println("\nFinished")
+			fmt.Println("\nFinished")
 		}()
 		<-timer.C
 
 		if !*nonotify {
 			notify("Timer finished!", !*nosound)
 		}
+	case "help":
+		fmt.Printf("ttime help:\n\n")
+	default:
+		printErrExit("command not found\navailable commands: timer, stopwatch, alarm")
 	}
 }

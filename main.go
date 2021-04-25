@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gen2brain/beeep"
 	"github.com/pterm/pterm"
 )
 
@@ -16,6 +17,19 @@ func printErrExit(a ...interface{}) {
 	fmt.Fprint(os.Stderr, a...)
 	fmt.Fprintf(os.Stderr, "\n")
 	os.Exit(1)
+}
+
+func notify(message string, sound bool) {
+	if sound {
+		err := beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
+		if err != nil {
+			printErrExit("failed to play notification sound: ", err)
+		}
+	}
+	err := beeep.Notify("ttime", message, "")
+	if err != nil {
+		printErrExit("failed to send notification: ", err)
+	}
 }
 
 func main() {

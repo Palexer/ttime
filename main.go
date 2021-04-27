@@ -35,13 +35,20 @@ func notify(message string, sound bool) {
 func main() {
 	nosound := flag.Bool("nosound", false, "play no sound when sending a notification")
 	nonotify := flag.Bool("nonotify", false, "don't send a notification when a timer is finished")
+	update := flag.Bool("u", false, "update time every second")
 	flag.Parse()
 
 	bwstyle := pterm.NewStyle(pterm.FgWhite, pterm.BgBlack)
 
 	switch strings.ToLower(flag.Arg(0)) {
 	case "":
-		fmt.Printf("%s\n", time.Now().Format(time.RFC1123))
+		if *update {
+			for range time.Tick(time.Second) {
+				fmt.Printf("\r%s", time.Now().Format(time.RFC1123))
+			}
+		} else {
+			fmt.Printf("%s\n", time.Now().Format(time.RFC1123))
+		}
 	case "stopwatch":
 		starttime := time.Now()
 		pterm.FgWhite.Println("Press Enter to stop")

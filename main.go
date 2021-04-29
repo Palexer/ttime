@@ -49,20 +49,18 @@ func main() {
 		} else {
 			fmt.Printf("%s\n", time.Now().Format(time.RFC1123))
 		}
+
 	case "stopwatch":
 		starttime := time.Now()
-		pterm.FgWhite.Println("Press Enter to stop")
+		fmt.Println("Press Enter to stop")
 
-		spinner, err := pterm.DefaultSpinner.WithRemoveWhenDone(true).Start("Running Stopwatch")
-		if err != nil {
-			printErrExit(err)
-		}
-
+		go func() {
+			for range time.Tick(time.Millisecond) {
+				fmt.Printf("\rRunning stopwatch: %s", time.Now().Sub(starttime).Round(time.Millisecond).String())
+			}
+		}()
 		fmt.Scanln()
-		stoptime := time.Now()
 
-		fmt.Printf("Measured time: %s\n", stoptime.Sub(starttime).Round(time.Millisecond))
-		spinner.Stop()
 	case "alarm":
 		if len(flag.Args()) < 2 {
 			printErrExit("not enough arguments: no time provided")

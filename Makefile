@@ -1,6 +1,9 @@
 build:
 	@go build -ldflags "-s -w"
 
+install: build
+	sudo mv ttime /usr/local/bin
+
 buildall:
 	@echo "start building"
 	@mkdir -p dist/win/amd64

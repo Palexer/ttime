@@ -12,6 +12,8 @@ import (
 	"github.com/pterm/pterm"
 )
 
+const version = "0.8"
+
 func printErrExit(a ...interface{}) {
 	fmt.Fprintf(os.Stderr, "ttime: ")
 	fmt.Fprint(os.Stderr, a...)
@@ -170,7 +172,10 @@ func main() {
 		fmt.Println("\tstopwatch: create a stopwatch")
 		fmt.Println("\ttimer N: create a timer for a duration of N")
 		fmt.Println("\talarm N: create an alarm at time N")
+		fmt.Println("\tversion: print the currently used version of ttime")
 		fmt.Println("\nsee ttime -h for available flags")
+	case "version":
+		fmt.Printf("ttime version %s\n", version)
 	default:
 		printErrExit("command not found\navailable commands: timer, stopwatch, alarm")
 	}

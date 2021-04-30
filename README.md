@@ -1,7 +1,24 @@
 # ttime (terminal time)
 
-ttime is a command line program to create timers, stopwatches alarms
-and get the current time.
+ttime is a command line program to create timers, stopwatches, alarms
+and to get the current time.
+
+## Installation
+
+Prebuilt binaries are available for Windows (amd64), macOS (amd64, arm64) and Linux (amd64, arm64).
+You can download them [here](https://github.com/Palexer/ttime/releases).
+Alternatively, you can compile from source by cloning this repository and running:
+
+```
+make
+```
+to build the binary and 
+
+```
+sudo make install
+```
+
+to build and install the binary.
 
 ## Usage
 

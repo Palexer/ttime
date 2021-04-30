@@ -56,7 +56,7 @@ func main() {
 
 		go func() {
 			for range time.Tick(time.Millisecond) {
-				fmt.Printf("\rRunning stopwatch: %s", time.Now().Sub(starttime).Round(time.Millisecond).String())
+				fmt.Printf("\rRunning stopwatch: %s", time.Now().Sub(starttime).Truncate(time.Millisecond))
 			}
 		}()
 		fmt.Scanln()
@@ -166,7 +166,11 @@ func main() {
 			notify("Timer finished!", !*nosound)
 		}
 	case "help":
-		fmt.Printf("ttime help:\n\n")
+		fmt.Printf("ttime help:\n")
+		fmt.Println("\tstopwatch: create a stopwatch")
+		fmt.Println("\ttimer N: create a timer for a duration of N")
+		fmt.Println("\talarm N: create an alarm at time N")
+		fmt.Println("\nsee ttime -h for available flags")
 	default:
 		printErrExit("command not found\navailable commands: timer, stopwatch, alarm")
 	}

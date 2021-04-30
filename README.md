@@ -11,6 +11,12 @@ and get the current time.
 ttime
 ```
 
+You can also use the -u flag to update the time every second:
+
+```
+ttime -u
+```
+
 ### Stopwatch
 
 ```

@@ -176,6 +176,10 @@ func main() {
 		fmt.Println("\nsee ttime -h for available flags")
 	case "version":
 		fmt.Printf("ttime version %s\n", version)
+	case "license":
+		fmt.Println("(C) Palexer, 2021\nttime is licensed under the BSD-3-Clause License\nSee the LICENSE file for more details.\nRepository: https://github.com/Palexer/ttime")
+	case "copyright":
+		fmt.Println("(C) Palexer, 2021\nttime is licensed under the BSD-3-Clause License\nSee the LICENSE file for more details.\nRepository: https://github.com/Palexer/ttime")
 	default:
 		printErrExit("command not found\navailable commands: timer, stopwatch, alarm")
 	}
